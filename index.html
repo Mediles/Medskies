@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minehut Servers Search</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Minehut Servers Search</h1>
+        <p>Search all Minehut servers</p>
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search for a server...">
+            <button id="search-button">Search</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="loading" id="loading">Loading servers...</div>
+        <div class="error" id="error" style="display: none;">Error loading servers. Please try again later.</div>
+        
+        <div id="favorites-section" style="display: none;">
+            <h2>Favorite Servers</h2>
+            <div class="servers-container" id="favorites-container">
+                <!-- Favorite servers will be populated here by JavaScript -->
+            </div>
+        </div>
+        
+        <h2 id="all-servers-heading">All Servers (Sorted by Player Count)</h2>
+        <div class="servers-container" id="servers-container">
+            <!-- Server list will be populated here by JavaScript -->
+        </div>
+
+        <!-- Server Details Modal -->
+        <div id="server-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <div id="modal-content-container"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Data provided by Minehut API</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
