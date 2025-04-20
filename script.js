@@ -249,8 +249,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to display servers (modified to use the simplified card)
     function displayServers(servers) {
         serversContainer.innerHTML = '';
+        console.log("First server object:", servers[0]); // Add this line
         servers.forEach((server, index) => {
-            const serverCard = createServerCard(server, index); 
+            const serverCard = createServerCard(server, index);
             if (serverCard) {
                 serversContainer.appendChild(serverCard);
             } else {
