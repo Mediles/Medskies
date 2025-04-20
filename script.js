@@ -6,8 +6,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorElement = document.getElementById('error');
     const searchInput = document.getElementById('search-input');
     const searchButton = document.getElementById('search-button');
+    if (searchButton) {
+        searchButton.addEventListener('click', searchServers);
+    } else {
+        console.warn('searchButton not found!');
+    }
     const modal = document.getElementById('server-modal');
     const closeBtn = document.querySelector('.close-modal');
+
+    console.log('searchButton:', document.getElementById('searchButton'));
+
 
     // Store all servers for searching
     let allServers = [];
