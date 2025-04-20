@@ -3,70 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minehut Servers Search</title>
+    <title>Medskies Analytics | Minehut Server Intelligence</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@6.5.95/css/materialdesignicons.min.css">
 </head>
 <body>
-    <header class="app-header">
-        <div class="header-content">
-            <div class="branding">
-                <img src="assets/logo.svg" alt="Medskies Logo" class="logo">
-                <div class="title-group">
+    <!-- Command Center Header -->
+    <header class="command-center">
+        <div class="header-grid">
+            <div class="brand-section">
+                <div class="logo-container">
+                    <span class="mdi mdi-minecraft"></span>
+                </div>
+                <div class="title-stack">
                     <h1>Medskies Analytics</h1>
-                    <p class="subtitle">Advanced Minehut Server Intelligence</p>
+                    <p class="subtitle">Real-time Minehut Intelligence</p>
                 </div>
             </div>
             
-            <div class="search-analytics">
-                <div class="search-container">
-                    <input type="text" id="search-input" placeholder="Search servers, tags, or metadata...">
-                    <div class="search-filters">
-                        <button class="filter-btn" data-filter="name">Name</button>
-                        <button class="filter-btn" data-filter="tags">Tags</button>
-                        <button class="filter-btn" data-filter="meta">Meta</button>
+            <div class="control-deck">
+                <div class="search-matrix">
+                    <div class="search-field">
+                        <span class="mdi mdi-magnify"></span>
+                        <input type="text" id="search-input" placeholder="Search servers, tags, or metadata...">
+                    </div>
+                    <div class="filter-chips">
+                        <button class="chip" data-filter="name"><span class="mdi mdi-server"></span>Name</button>
+                        <button class="chip" data-filter="tags"><span class="mdi mdi-tag"></span>Tags</button>
+                        <button class="chip" data-filter="players"><span class="mdi mdi-account-group"></span>Players</button>
                     </div>
                 </div>
-                <div class="quick-stats">
-                    <div class="stat-item">
-                        <span class="stat-value" id="total-servers">0</span>
-                        <span class="stat-label">Servers</span>
+                
+                <div class="metrics-dashboard">
+                    <div class="metric">
+                        <span id="total-servers" class="metric-value">--</span>
+                        <span class="metric-label">Active Servers</span>
                     </div>
-                    <div class="stat-item">
-                        <span class="stat-value" id="total-players">0</span>
-                        <span class="stat-label">Players</span>
+                    <div class="metric">
+                        <span id="total-players" class="metric-value">--</span>
+                        <span class="metric-label">Online Players</span>
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <main>
-        <div class="loading" id="loading">Loading servers...</div>
-        <div class="error" id="error" style="display: none;">Error loading servers. Please try again later.</div>
-        
-        <div id="favorites-section" style="display: none;">
-            <h2>Favorite Servers</h2>
-            <div class="servers-container" id="favorites-container">
-                <!-- Favorite servers will be populated here by JavaScript -->
-            </div>
-        </div>
-        
-        <h2 id="all-servers-heading">All Servers (Sorted by Player Count)</h2>
-        <div class="servers-container" id="servers-container">
-            <!-- Server list will be populated here by JavaScript -->
+    <main class="data-viewport">
+        <div id="loading" class="loading-matrix">
+            <span class="mdi mdi-loading mdi-spin"></span>
+            <span>Analyzing Server Matrix...</span>
         </div>
 
-        <!-- Server Details Modal -->
-        <div id="server-modal" class="modal">
-            <div class="modal-content">
-                <span class="close-modal">&times;</span>
-                <div id="modal-content-container"></div>
+        <div id="error" class="error-state" style="display: none;">
+            <span class="mdi mdi-alert"></span>
+            <span>Intelligence Network Disrupted. Retrying...</span>
+        </div>
+        
+        <section id="favorites-section" class="favorites-matrix" style="display: none;">
+            <div class="section-header">
+                <h2><span class="mdi mdi-star"></span>Priority Servers</h2>
+                <span class="section-meta" id="favorites-count">0 tracked</span>
+            </div>
+            <div id="favorites-container" class="server-grid"></div>
+        </section>
+        
+        <section class="servers-matrix">
+            <div class="section-header">
+                <h2><span class="mdi mdi-server-network"></span>Server Intelligence</h2>
+                <div class="view-controls">
+                    <button class="view-toggle" data-view="grid"><span class="mdi mdi-grid"></span></button>
+                    <button class="view-toggle" data-view="list"><span class="mdi mdi-format-list-bulleted"></span></button>
+                </div>
+            </div>
+            <div id="servers-container" class="server-grid"></div>
+        </section>
+
+        <!-- Intelligence Modal -->
+        <div id="server-modal" class="intel-modal">
+            <div class="modal-matrix">
+                <div class="modal-header">
+                    <h3>Server Intelligence</h3>
+                    <button class="close-modal"><span class="mdi mdi-close"></span></button>
+                </div>
+                <div id="modal-content-container" class="modal-content"></div>
             </div>
         </div>
     </main>
 
-    <footer>
-        <p>Data provided by Minehut API</p>
+    <footer class="command-footer">
+        <div class="footer-grid">
+            <p>Powered by Minehut Intelligence Network</p>
+            <div class="footer-metrics">
+                <span id="api-status" class="status-chip">API: Connected</span>
+                <span id="last-update" class="update-chip">Last Update: Just now</span>
+            </div>
+        </div>
     </footer>
 
     <script src="script.js"></script>
