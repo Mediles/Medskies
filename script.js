@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const serversContainer = document.getElementById('servers-container');
     const favoritesContainer = document.getElementById('favorites-container');
     const favoritesSection = document.getElementById('favorites-section');
- // !DECLARED TWICE const loadingElement = document.getElementById('loading');
+    const loadingElement = document.getElementById('loading');
     const errorElement = document.getElementById('error');
     const searchInput = document.getElementById('search-input');
     const searchButton = document.getElementById('search-button');
@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Main function to load and display servers
     async function loadServers() {
-        const loadingElement = document.getElementById('loading');
+ // !DECLARED TWICE   const loadingElement = document.getElementById('loading');
         const errorElement = document.getElementById('error');
         const serversContainer = document.getElementById('servers-container');
 
