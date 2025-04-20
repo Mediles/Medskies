@@ -167,6 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Create a server card element
     function createServerCard(server, index, isFavorite = false) {
+        console.log('createServerCard called for:', server.name, server._id, 'isFavorite:', isFavorite);
         const serverCardWrapper = document.createElement('div');
         serverCardWrapper.className = 'server-card-wrapper';
         serverCardWrapper.dataset.serverId = server._id; // Add server ID as data attribute
@@ -231,13 +232,19 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Function to display servers
     function displayServers(servers) {
+        console.log('displayServers called with:', servers);
         serversContainer.innerHTML = '';
-        
         servers.forEach((server, index) => {
+            console.log('Processing server:', server.name, server._id);
             const serverCardWrapper = createServerCard(server, index);
-            serversContainer.appendChild(serverCardWrapper);
+            if (serverCardWrapper) {
+                serversContainer.appendChild(serverCardWrapper);
+            } else {
+                console.error('createServerCard returned null for:', server.name);
+            }
         });
     }
+    
 
     // Search servers function
     function searchServers() {
