@@ -13,6 +13,8 @@
     --shadow-sm: 0 2px 4px rgba(0,0,0,0.2);
     --shadow-lg: 0 8px 24px rgba(0,0,0,0.3);
     --transition: all 0.3s ease;
+    --color-success-rgb: 67, 181, 129; /* RGB values for rgba */
+    --color-danger-rgb: 240, 71, 71;   /* RGB values for rgba */
 }
 
 /* Global Reset */
@@ -145,91 +147,117 @@ body {
     color: var(--color-text-muted);
 }
 
-/* Server Grid & Cards */
+/* Server Grid & Cards (Modified for simplified view) */
 .server-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1rem;
-    padding: 1rem;
-}
-
-.server-card-wrapper {
-    position: relative;
-    transition: var(--transition);
+    display: flex; /* Changed to flex for single column */
+    flex-direction: column; /* Stack items vertically */
+    gap: 0.5rem; /* Reduced gap for compactness */
+    padding: 0.5rem; /* Reduced padding */
 }
 
 .server-card {
     background: var(--color-surface);
-    border-radius: 8px;
-    padding: 1rem;
+    /* Removed border-radius for less roundness */
+    padding: 0.75rem; /* Reduced padding */
     cursor: pointer;
     transition: var(--transition);
-    border: 1px solid var(--color-surface-accent);
+    border-bottom: 1px solid var(--color-surface-accent); /* Subtle divider */
+    display: flex; /* Align main info and favorite button */
+    align-items: center;
+    justify-content: space-between; /* Space out main info and favorite */
+}
+
+.server-card:last-child {
+    border-bottom: none; /* Remove border from the last item */
 }
 
 .server-card:hover {
-    transform: translateY(-2px);
+    transform: translateY(-1px); /* Subtle hover effect */
     border-color: var(--color-primary);
 }
 
+.server-main-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-grow: 1; /* Allow main info to take up space */
+}
+
+.server-rank {
+    /* Removed background and rounded styles */
+    color: var(--color-text-muted);
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-right: 0.5rem;
+}
+
+.server-rank.top-3 {
+    color: var(--color-primary);
+}
+
 .server-name {
-    font-size: 1.1rem;
+    font-size: 1rem; /* Slightly reduced font size */
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    /* Removed margin-bottom */
+    flex-grow: 1; /* Allow name to take up more space */
+    overflow: hidden; /* Handle long names */
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .server-players {
     color: var(--color-text-muted);
-    font-size: 0.9rem;
+    font-size: 0.85rem; /* Slightly reduced font size */
+    /* Removed display and gap */
+    margin-left: auto; /* Push players and status to the right */
+}
+
+.server-status {
+    display: inline-block;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-left: 0.5rem;
+}
+
+.server-status.online {
+    background: rgba(var(--color-success-rgb), 0.2);
+    color: var(--color-success);
+}
+
+.server-status.offline {
+    background: rgba(var(--color-danger-rgb), 0.2);
+    color: var(--color-danger);
+}
+
+.server-categories {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    gap: 0.3rem;
+    margin-top: 0.3rem;
+    /* Align to the left, below the main info */
+    flex-basis: 100%; /* Take full width to be below main info */
+    order: 2; /* Ensure it appears below the main info in flex layout */
 }
 
-.server-description {
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
-    color: var(--color-text-muted);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.rank {
-    position: absolute;
-    top: -0.5rem;
-    left: -0.5rem;
-    background: var(--color-surface-accent);
-    color: var(--color-text);
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    font-size: 0.9rem;
-    border: 2px solid var(--color-bg);
-    z-index: 1;
-}
-
-.rank.top-3 {
-    background: var(--color-primary);
+.category-tag {
+    display: inline-block;
+    padding: 0.15rem 0.4rem;
+    border-radius: 5px; /* For the roundish rectangle look */
+    font-size: 0.7rem;
     color: white;
+    font-weight: 500;
 }
 
 .favorite-btn {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
     background: transparent;
     border: none;
     color: var(--color-text-muted);
     cursor: pointer;
-    font-size: 1.2rem;
+    font-size: 1rem;
     z-index: 1;
     transition: var(--transition);
+    margin-left: 0.75rem; /* Push it to the right */
 }
 
 .favorite-btn.active {
@@ -291,34 +319,7 @@ body {
     font-weight: 500;
 }
 
-/* Tag System */
-.tag-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem;
-    margin-top: 0.5rem;
-}
-
-.tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.25rem 0.5rem;
-    background: var(--color-surface-accent);
-    border-radius: 12px;
-    font-size: 0.8rem;
-    color: var(--color-text-muted);
-    transition: var(--transition);
-}
-
-.tag:hover {
-    background: var(--color-primary);
-    color: var(--color-text);
-}
-
-.tag .mdi {
-    font-size: 1rem;
-}
+/* Tag System (Old tag styles removed) */
 
 /* Loading & Error States */
 .loading-matrix,
@@ -380,18 +381,18 @@ body {
     gap: 1rem;
 }
 
-/* Responsive Design */
+/* Responsive Design (Adjusted for single column list) */
 @media (max-width: 768px) {
     .header-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .metrics-dashboard {
         flex-wrap: wrap;
     }
 
     .server-grid {
-        grid-template-columns: 1fr;
+        /* Remains flex column */
         padding: 0.5rem;
     }
 
@@ -418,12 +419,38 @@ body {
         justify-content: center;
     }
 
+    .server-main-info {
+        flex-direction: column; /* Stack name and players/status on smaller screens */
+        align-items: flex-start;
+    }
+
+    .server-players {
+        margin-left: 0; /* Reset margin */
+    }
+
+    .server-status {
+        margin-left: 0; /* Reset margin */
+        margin-top: 0.2rem;
+    }
+
+    .server-categories {
+        margin-top: 0.5rem; /* More space for categories */
+    }
+
     .tag-container {
         justify-content: center;
     }
 
     .server-card {
         padding: 0.75rem;
+        flex-direction: column; /* Stack main info and favorite button */
+        align-items: flex-start;
+    }
+
+    .favorite-btn {
+        margin-left: 0;
+        margin-top: 0.5rem;
+        align-self: flex-end; /* Push to the right in the stacked layout */
     }
 
     .rank {
@@ -431,4 +458,31 @@ body {
         height: 1.75rem;
         font-size: 0.8rem;
     }
+}
+
+/* Favorites Section */
+#favorites-section {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+    border-radius: 6px;
+}
+
+#favorites-section h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+}
+
+#favorites-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+#favorites-count {
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
 }
