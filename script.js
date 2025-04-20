@@ -304,7 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function showServerDetails(server) {
         const modal = document.getElementById('server-modal');
         const modalContent = document.getElementById('modal-content-container');
-        
+    
         // Show loading state
         modalContent.innerHTML = `
             <div class="loading-state">
@@ -313,16 +313,16 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
         modal.style.display = 'block';
-        
+    
         try {
             // Fetch detailed server data
             const response = await fetch(`https://api.minehut.com/server/${server._id}`);
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             const data = await response.json();
             const detailedServer = data.server;
-            
-            modalContent.innerHTML = '';
-            
+    
+            modalContent.innerHTML = ''; // Clear loading state
+    
             // Create header with server name and status
             const headerDiv = document.createElement('div');
             headerDiv.className = 'server-detail-header';
@@ -333,8 +333,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 </span>
             `;
             modalContent.appendChild(headerDiv);
-            
-            // Add MOTD/Description if available (keeping this at top for visibility)
+    
+            // Add player count (use detailedServer if available, otherwise fallback to server)
+            addDetailRow(modalContent, 'Players', `${detailedServer.playerCount} / ${detailedServer.maxPlayers || 'Unknown'}`);
+    
+            // Add server description/MOTD if available (use detailedServer)
             if (detailedServer.motd) {
                 const descDiv = document.createElement('div');
                 descDiv.className = 'server-detail description-section';
@@ -344,33 +347,45 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 modalContent.appendChild(descDiv);
             }
-            
+    
+            // Add server IP
+            addDetailRow(modalContent, 'Server IP', `${detailedServer.name}.minehut.gg`);
+    
+            // Add creation date
+            if (detailedServer.creation) {
+                const creationDate = new Date(detailedServer.creation);
+                addDetailRow(modalContent, 'Created', creationDate.toLocaleDateString());
+            }
+    
+            // Add server version
+            if (detailedServer.server_version_type) {
+                addDetailRow(modalContent, 'Version Type', detailedServer.server_version_type);
+            }
+    
+            // Add server platform
+            if (detailedServer.platform) {
+                addDetailRow(modalContent, 'Platform', detailedServer.platform);
+            }
+    
             // Primary Information Section
             const primarySection = document.createElement('div');
             primarySection.className = 'server-detail-section primary';
             [
-                ['Players', `${detailedServer.playerCount} / ${detailedServer.maxPlayers || 'Unknown'}`],
-                ['Server IP', `${detailedServer.name}.minehut.gg`],
-                ['Version Type', detailedServer.server_version_type],
+                ['Total Joins', detailedServer.joins],
+                ['Credits/Day', detailedServer.credits_per_day?.toFixed(2)],
                 ['Server Plan', detailedServer.activeServerPlan]
             ].forEach(([label, value]) => {
-                if (value) addDetailRow(primarySection, label, value);
+                if (value !== null && value !== undefined) addDetailRow(primarySection, label, value);
             });
             modalContent.appendChild(primarySection);
-            
+    
             // Secondary Information Section
             const secondarySection = document.createElement('div');
             secondarySection.className = 'server-detail-section secondary';
-            [
-                ['Total Joins', detailedServer.joins],
-                ['Credits/Day', detailedServer.credits_per_day?.toFixed(2)],
-                ['Created', detailedServer.creation ? new Date(detailedServer.creation).toLocaleDateString() : null],
-                ['Platform', detailedServer.platform]
-            ].forEach(([label, value]) => {
-                if (value) addDetailRow(secondarySection, label, value);
-            });
+            // Add any other secondary information from detailedServer here
+    
             modalContent.appendChild(secondarySection);
-            
+    
         } catch (error) {
             console.error('Error fetching server details:', error);
             modalContent.innerHTML = `
