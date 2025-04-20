@@ -93,6 +93,19 @@ revert: return to stable version
 merge(develop): sync with main branch
 ```
 
+## Automated Commit Commands
+
+This project supports automated commit and push operations through special commands:
+
+### /COMMIT+PUSH Command
+
+When you use the command `/COMMIT+PUSH`, the system will:
+1. Stage all changes
+2. Generate a commit message following our format guidelines
+3. Push changes to the main branch
+
+The commit message will be automatically formatted according to the rules above, ensuring consistency in our version control system.
+
 ## Git Commands
 
 ```bash
