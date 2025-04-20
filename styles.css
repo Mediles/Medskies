@@ -147,24 +147,26 @@ body {
     color: var(--color-text-muted);
 }
 
-/* Server Grid & Cards (Modified for simplified view) */
+/* Server Grid & Cards (Modified for 4-column grid) */
 .server-grid {
-    display: flex; /* Changed to flex for single column */
-    flex-direction: column; /* Stack items vertically */
-    gap: 0.5rem; /* Reduced gap for compactness */
-    padding: 0.5rem; /* Reduced padding */
+    display: grid; /* Use CSS Grid */
+    grid-template-columns: repeat(4, 1fr); /* Create 4 equal columns */
+    gap: 0.5rem; /* Gap between grid items */
+    padding: 0.5rem; /* Padding around the grid */
 }
 
 .server-card {
     background: var(--color-surface);
-    /* Removed border-radius for less roundness */
-    padding: 0.75rem; /* Reduced padding */
+    padding: 0.75rem;
     cursor: pointer;
     transition: var(--transition);
-    border-bottom: 1px solid var(--color-surface-accent); /* Subtle divider */
-    display: flex; /* Align main info and favorite button */
-    align-items: center;
-    justify-content: space-between; /* Space out main info and favorite */
+    border-radius: 6px; /* Add a subtle border-radius for the square look */
+    box-shadow: var(--shadow-sm); /* Add a subtle shadow to lift the cards */
+    display: flex;
+    flex-direction: column; /* Stack content within the card vertically */
+    align-items: flex-start; /* Align content to the left */
+    /* Remove the bottom border as it's no longer needed in a grid */
+    border-bottom: none;
 }
 
 .server-card:last-child {
@@ -172,23 +174,24 @@ body {
 }
 
 .server-card:hover {
-    transform: translateY(-1px); /* Subtle hover effect */
-    border-color: var(--color-primary);
+    transform: translateY(-2px); /* More pronounced hover effect for individual cards */
+    border-color: var(--color-primary); /* Keep the border color change on hover */
+    box-shadow: var(--shadow-lg); /* Enhance shadow on hover */
 }
 
 .server-main-info {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    flex-grow: 1; /* Allow main info to take up space */
+    gap: 0.5rem; /* Reduced gap for better alignment in the square */
+    width: 100%; /* Ensure it takes the full width of the card */
+    margin-bottom: 0.3rem; /* Add some space below the main info */
 }
 
 .server-rank {
-    /* Removed background and rounded styles */
     color: var(--color-text-muted);
     font-weight: 500;
     font-size: 0.9rem;
-    margin-right: 0.5rem;
+    margin-right: 0.3rem;
 }
 
 .server-rank.top-3 {
@@ -196,20 +199,18 @@ body {
 }
 
 .server-name {
-    font-size: 1rem; /* Slightly reduced font size */
+    font-size: 1rem;
     font-weight: 600;
-    /* Removed margin-bottom */
-    flex-grow: 1; /* Allow name to take up more space */
-    overflow: hidden; /* Handle long names */
+    flex-grow: 1;
+    overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
 }
 
 .server-players {
     color: var(--color-text-muted);
-    font-size: 0.85rem; /* Slightly reduced font size */
-    /* Removed display and gap */
-    margin-left: auto; /* Push players and status to the right */
+    font-size: 0.85rem;
+    margin-left: auto; /* Push to the right within the main info */
 }
 
 .server-status {
@@ -218,7 +219,7 @@ body {
     border-radius: 4px;
     font-size: 0.75rem;
     font-weight: 500;
-    margin-left: 0.5rem;
+    margin-left: 0.3rem;
 }
 
 .server-status.online {
@@ -233,20 +234,20 @@ body {
 
 .server-categories {
     display: flex;
-    gap: 0.3rem;
+    gap: 0.2rem;
     margin-top: 0.3rem;
-    /* Align to the left, below the main info */
-    flex-basis: 100%; /* Take full width to be below main info */
-    order: 2; /* Ensure it appears below the main info in flex layout */
+    flex-wrap: wrap; /* Allow tags to wrap if they don't fit */
+    width: 100%; /* Take full width within the card */
 }
 
 .category-tag {
     display: inline-block;
-    padding: 0.15rem 0.4rem;
-    border-radius: 5px; /* For the roundish rectangle look */
-    font-size: 0.7rem;
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+    font-size: 0.65rem; /* Slightly smaller for better fit */
     color: white;
     font-weight: 500;
+    margin-bottom: 0.2rem; /* Space between wrapped tags */
 }
 
 .favorite-btn {
@@ -257,7 +258,8 @@ body {
     font-size: 1rem;
     z-index: 1;
     transition: var(--transition);
-    margin-left: 0.75rem; /* Push it to the right */
+    /* Adjust positioning for the top right of the square */
+    margin-left: auto;
 }
 
 .favorite-btn.active {
@@ -382,9 +384,21 @@ body {
 }
 
 /* Responsive Design (Adjusted for single column list) */
-@media (max-width: 768px) {
-    .header-grid {
-        grid-template-columns: 1fr;
+@media (max-width: 1200px) {
+    .server-grid {
+        grid-template-columns: repeat(3, 1fr); /* Adjust to 3 columns on medium screens */
+    }
+}
+
+@media (max-width: 900px) {
+    .server-grid {
+        grid-template-columns: repeat(2, 1fr); /* Adjust to 2 columns on smaller screens */
+    }
+}
+
+@media (max-width: 600px) {
+    .server-grid {
+        grid-template-columns: 1fr; /* Back to single column on very small screens */
     }
 
     .metrics-dashboard {
