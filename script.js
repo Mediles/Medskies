@@ -301,77 +301,89 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Function to show server details in modal
-    function showServerDetails(server) {
+    async function showServerDetails(server) {
         const modal = document.getElementById('server-modal');
         const modalContent = document.getElementById('modal-content-container');
         
-        // Clear previous content
-        modalContent.innerHTML = '';
-        
-        // Create header with server name and status
-        const headerDiv = document.createElement('div');
-        headerDiv.className = 'server-detail-header';
-        
-        const nameElement = document.createElement('h2');
-        nameElement.className = 'server-detail-name';
-        nameElement.textContent = server.name;
-        headerDiv.appendChild(nameElement);
-        
-        const statusElement = document.createElement('span');
-        statusElement.className = `server-detail-status ${server.online ? 'status-online' : 'status-offline'}`;
-        statusElement.textContent = server.online ? 'Online' : 'Offline';
-        headerDiv.appendChild(statusElement);
-        
-        modalContent.appendChild(headerDiv);
-        
-        // Add player count
-        addDetailRow(modalContent, 'Players', `${server.playerData ? server.playerData.playerCount : 0} / ${server.maxPlayers || 'Unknown'}`);
-        
-        // Add server description/MOTD if available
-        if (server.motd) {
-            const descDiv = document.createElement('div');
-            descDiv.className = 'server-detail';
-            
-            const descLabel = document.createElement('div');
-            descLabel.className = 'server-detail-label';
-            descLabel.textContent = 'Description:';
-            descDiv.appendChild(descLabel);
-            
-            const descValue = document.createElement('div');
-            descValue.className = 'server-detail-value';
-            descValue.innerHTML = parseMotdFormatting(server.motd);
-            descDiv.appendChild(descValue);
-            
-            modalContent.appendChild(descDiv);
-        }
-        
-        // Add server IP if available
-        if (server.connectInfo && server.connectInfo.serverIP) {
-            addDetailRow(modalContent, 'Server IP', `${server.connectInfo.serverIP}${server.connectInfo.port ? `:${server.connectInfo.port}` : ''}`);
-        } else {
-            addDetailRow(modalContent, 'Server IP', `${server.name}.minehut.gg`);
-        }
-        
-        // Add creation date if available
-        if (server.creation) {
-            const creationDate = new Date(server.creation);
-            addDetailRow(modalContent, 'Created', creationDate.toLocaleDateString());
-        }
-        
-        // Add server version if available
-        if (server.serverVersion) {
-            addDetailRow(modalContent, 'Version', server.serverVersion);
-        }
-        
-        // Add server platform if available
-        if (server.platform) {
-            addDetailRow(modalContent, 'Platform', server.platform);
-        }
-        
-        // Show the modal
+        // Show loading state
+        modalContent.innerHTML = `
+            <div class="loading-state">
+                <div class="loading-spinner"></div>
+                <p>Loading server details...</p>
+            </div>
+        `;
         modal.style.display = 'block';
+        
+        try {
+            // Fetch detailed server data
+            const response = await fetch(`https://api.minehut.com/server/${server._id}`);
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            const data = await response.json();
+            const detailedServer = data.server;
+            
+            modalContent.innerHTML = '';
+            
+            // Create header with server name and status
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'server-detail-header';
+            headerDiv.innerHTML = `
+                <h2 class="server-detail-name">${detailedServer.name}</h2>
+                <span class="server-detail-status ${detailedServer.online ? 'status-online' : 'status-offline'}">
+                    ${detailedServer.online ? 'Online' : 'Offline'}
+                </span>
+            `;
+            modalContent.appendChild(headerDiv);
+            
+            // Add MOTD/Description if available (keeping this at top for visibility)
+            if (detailedServer.motd) {
+                const descDiv = document.createElement('div');
+                descDiv.className = 'server-detail description-section';
+                descDiv.innerHTML = `
+                    <div class="server-detail-label">Description:</div>
+                    <div class="server-detail-value">${parseMotdFormatting(detailedServer.motd)}</div>
+                `;
+                modalContent.appendChild(descDiv);
+            }
+            
+            // Primary Information Section
+            const primarySection = document.createElement('div');
+            primarySection.className = 'server-detail-section primary';
+            [
+                ['Players', `${detailedServer.playerCount} / ${detailedServer.maxPlayers || 'Unknown'}`],
+                ['Server IP', `${detailedServer.name}.minehut.gg`],
+                ['Version Type', detailedServer.server_version_type],
+                ['Server Plan', detailedServer.activeServerPlan]
+            ].forEach(([label, value]) => {
+                if (value) addDetailRow(primarySection, label, value);
+            });
+            modalContent.appendChild(primarySection);
+            
+            // Secondary Information Section
+            const secondarySection = document.createElement('div');
+            secondarySection.className = 'server-detail-section secondary';
+            [
+                ['Total Joins', detailedServer.joins],
+                ['Credits/Day', detailedServer.credits_per_day?.toFixed(2)],
+                ['Created', detailedServer.creation ? new Date(detailedServer.creation).toLocaleDateString() : null],
+                ['Platform', detailedServer.platform]
+            ].forEach(([label, value]) => {
+                if (value) addDetailRow(secondarySection, label, value);
+            });
+            modalContent.appendChild(secondarySection);
+            
+        } catch (error) {
+            console.error('Error fetching server details:', error);
+            modalContent.innerHTML = `
+                <div class="error-state">
+                    <p>Error loading server details: ${error.message}</p>
+                    <button class="retry-button" onclick="showServerDetails(${JSON.stringify(server)})">
+                        Retry
+                    </button>
+                </div>
+            `;
+        }
     }
-    
+
     // Helper function to add a detail row to the modal
     function addDetailRow(container, label, value) {
         const detailDiv = document.createElement('div');
