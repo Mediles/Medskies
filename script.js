@@ -212,6 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const categoryContainer = document.createElement('div');
         categoryContainer.className = 'server-categories';
 
+        // Check if the server object has the 'categories' property and it's an array
         if (server.categories && Array.isArray(server.categories)) {
             const prioritizedCategories = server.categories
                 .sort((a, b) => categoryOrder.indexOf(a) - categoryOrder.indexOf(b))
@@ -230,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         serverCard.appendChild(categoryContainer);
 
-        // Favorite button (moved to be a direct child of serverCard for simpler layout)
+        // Favorite button
         const favoriteBtn = document.createElement('button');
         favoriteBtn.className = `favorite-btn ${isServerFavorite(server._id) ? 'active' : ''}`;
         favoriteBtn.innerHTML = '★';
@@ -298,24 +299,48 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadServers() {
         const errorElement = document.getElementById('error');
         const serversContainer = document.getElementById('servers-container');
-
+        const initialLoadCount = 20;
+    
         try {
             loadingElement.style.display = 'block';
             errorElement.style.display = 'none';
             serversContainer.innerHTML = '';
-
+    
             favoriteServers = loadFavorites();
-            allServers = await fetchMinehutServers();
-
+            let initialServers = await fetchMinehutServers();
+            allServers = [...initialServers];
+    
+            // Fetch detailed information for the top N servers
+            const serversToDetail = initialServers.slice(0, initialLoadCount);
+            const detailedServers = await Promise.all(serversToDetail.map(async (server) => {
+                try {
+                    const response = await fetch(`https://api.minehut.com/server/${server._id}`);
+                    if (!response.ok) {
+                        console.error(`Failed to fetch details for ${server.name}: ${response.status}`);
+                        return server;
+                    }
+                    const data = await response.json();
+                    return { ...server, categories: data.server.categories };
+                } catch (error) {
+                    console.error(`Error fetching details for ${server.name}:`, error);
+                    return server;
+                }
+            }));
+    
+            // Update the first N servers in our allServers array with the detailed info
+            for (let i = 0; i < detailedServers.length && i < allServers.length; i++) {
+                allServers[i] = detailedServers[i];
+            }
+    
             loadingElement.style.display = 'none';
             displayFavorites();
             displayServers(allServers);
-
+    
         } catch (error) {
             loadingElement.style.display = 'none';
             errorElement.style.display = 'block';
             errorElement.textContent = `Error loading servers: ${error.message}. Retrying in 30 seconds...`;
-            setTimeout(loadServers, 30000); // Retry after 30 seconds
+            setTimeout(loadServers, 30000);
         }
     }
 
