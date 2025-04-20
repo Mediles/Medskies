@@ -46,42 +46,38 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchMinehutServers() {
         try {
             const now = Date.now();
-            if (now - lastApiCheck > API_CHECK_INTERVAL) {
+            if (lastApiCheck === 0 || now - lastApiCheck > API_CHECK_INTERVAL) { // Allow initial call
                 lastApiCheck = now;
                 const apiStatusElement = document.getElementById('api-status');
                 const lastUpdateElement = document.getElementById('last-update');
     
-                // Add loading state
                 apiStatusElement.className = 'status-chip';
                 apiStatusElement.textContent = 'API: Checking...';
     
                 const response = await fetch('https://api.minehut.com/servers');
-                
+    
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
     
                 const data = await response.json();
-                
+    
                 if (!data || !data.servers || !Array.isArray(data.servers)) {
                     throw new Error('Invalid data format received from API');
                 }
     
-                // Update API status indicators
                 lastApiStatus = 'connected';
                 apiStatusElement.className = 'status-chip status-online';
                 apiStatusElement.textContent = 'API: Connected';
                 lastUpdateElement.textContent = `Last Update: ${new Date().toLocaleTimeString()}`;
     
-                // Update total counts
                 document.getElementById('total-servers').textContent = data.servers.length;
-                const totalPlayers = data.servers.reduce((sum, server) => 
+                const totalPlayers = data.servers.reduce((sum, server) =>
                     sum + (server.playerData ? server.playerData.playerCount : 0), 0);
                 document.getElementById('total-players').textContent = totalPlayers;
     
-                // Sort and return servers
-                return data.servers.sort((a, b) => 
-                    (b.playerData ? b.playerData.playerCount : 0) - 
+                return data.servers.sort((a, b) =>
+                    (b.playerData ? b.playerData.playerCount : 0) -
                     (a.playerData ? a.playerData.playerCount : 0)
                 );
             }
@@ -89,16 +85,14 @@ document.addEventListener('DOMContentLoaded', () => {
             throw new Error('Rate limit: Please wait before refreshing');
         } catch (error) {
             console.error('Error fetching Minehut servers:', error);
-            
-            // Update status indicators for error state
+    
             const apiStatusElement = document.getElementById('api-status');
             apiStatusElement.className = 'status-chip status-offline';
             apiStatusElement.textContent = 'API: Error';
-            
-            // Show error message to user
+    
             errorElement.style.display = 'block';
             errorElement.textContent = `Error: ${error.message}. Retrying in 30 seconds...`;
-            
+    
             lastApiStatus = 'error';
             throw error;
         }
@@ -266,28 +260,27 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Main function to load and display servers
     async function loadServers() {
+        const loadingElement = document.getElementById('loading');
+        const errorElement = document.getElementById('error');
+        const serversContainer = document.getElementById('servers-container');
+
         try {
             loadingElement.style.display = 'block';
             errorElement.style.display = 'none';
             serversContainer.innerHTML = '';
-            
-            // Load favorites from local storage
+
             favoriteServers = loadFavorites();
-            
-            // Fetch all servers
             allServers = await fetchMinehutServers();
-            
+
             loadingElement.style.display = 'none';
-            
-            // Display favorites if any
             displayFavorites();
-            
-            // Display all servers
             displayServers(allServers);
+
         } catch (error) {
             loadingElement.style.display = 'none';
             errorElement.style.display = 'block';
-            errorElement.textContent = `Error loading servers: ${error.message}`;
+            errorElement.textContent = `Error loading servers: ${error.message}. Retrying in 30 seconds...`;
+            setTimeout(loadServers, 30000); // Retry after 30 seconds
         }
     }
     
