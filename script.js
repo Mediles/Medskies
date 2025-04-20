@@ -9,8 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('server-modal');
     const closeBtn = document.querySelector('.close-modal');
 
-    console.log('searchButton:', document.getElementById('searchButton'));
-
 
     // Store all servers for searching
     let allServers = [];
@@ -145,110 +143,136 @@ document.addEventListener('DOMContentLoaded', () => {
         displayFavorites();
     }
 
-    // Display favorite servers
-    function displayFavorites() {
-        favoritesContainer.innerHTML = '';
+    // Category color mapping and display order
+    const categoryColors = {
+        "pvp": { label: "⚔ PvP", color: "#DF3D4B" },
+        "lifesteal": { label: "❤️ Lifesteal", color: "#70C8D2" },
+        "smp": { label: "🏡 SMP", color: "#0DC255" },
+        "gens": { label: "⚡ Gens", color: "#484372" },
+        "box": { label: "📦 Box", color: "#A068B7" },
+        "minigames": { label: "🎉 Minigames", color: "#F6BC51" },
+        "rpg": { label: "🛡️ RPG", color: "#982341" },
+        "roleplay": { label: "🎭 Roleplay", color: "#D384F2" },
+        "parkour": { label: "🤸 Parkour", color: "#DE916C" },
+        "farming": { label: "🌾 Farming", color: "#B44176" },
+        "prison": { label: "⛓️ Prison", color: "#188643" },
+        "factions": { label: "🚩 Factions", color: "#C4E04A" },
+        "puzzle": { label: "🧩 Puzzle", color: "#85827B" },
+        "meme": { label: "😂 Meme", color: "#12BF59" },
+        "creative": { label: "🎨 Creative", color: "#2F7D7C" }
+    };
 
-        // We'll use our current in-memory favorites array directly
-        // This ensures we're working with the most up-to-date favorites that were just modified
+    const categoryOrder = [
+        "pvp", "lifesteal", "smp", "gens", "box", "minigames", "rpg",
+        "roleplay", "parkour", "farming", "prison", "factions", "puzzle", "meme", "creative"
+    ];
 
-        if (favoriteServers.length === 0) {
-            favoritesSection.style.display = 'none';
-            return;
-        }
-
-        favoritesSection.style.display = 'block';
-
-        // Display all favorited servers
-        favoriteServers.forEach(server => {
-            const serverCardWrapper = createServerCard(server, null, true);
-            favoritesContainer.appendChild(serverCardWrapper);
-        });
-
-        // Log for debugging
-        console.log('Displaying favorites:', favoriteServers.length, 'servers', favoriteServers);
-    }
-
-    // Create a server card element
+    // Create a server card element (simplified overview)
     function createServerCard(server, index, isFavorite = false) {
-        console.log('createServerCard called for:', server.name, server._id, 'isFavorite:', isFavorite);
-        const serverCardWrapper = document.createElement('div');
-        serverCardWrapper.className = 'server-card-wrapper';
-        serverCardWrapper.dataset.serverId = server._id; // Add server ID as data attribute
-
         const serverCard = document.createElement('div');
         serverCard.className = 'server-card';
+        serverCard.dataset.serverId = server._id;
 
-        // Add click event to show server details
+        // Add click event to show server details (will be implemented later)
         serverCard.addEventListener('click', () => showServerDetails(server));
 
-        // Add rank indicator if not in favorites section
-        if (index !== null) {
-            const rankElement = document.createElement('div');
-            rankElement.className = `rank ${index < 3 ? 'top-3' : ''}`;
-            rankElement.textContent = index + 1;
-            serverCardWrapper.appendChild(rankElement);
+        // Main info line
+        const mainInfo = document.createElement('div');
+        mainInfo.className = 'server-main-info';
+
+        // Rank
+        if (index !== null && !isFavorite) { // Only show rank on the main list
+            const rankElement = document.createElement('span');
+            rankElement.className = `server-rank ${index < 3 ? 'top-3' : ''}`;
+            rankElement.textContent = `#${index + 1}`;
+            mainInfo.appendChild(rankElement);
         }
 
-        // Add favorite button
+        // Server name
+        const nameElement = document.createElement('span');
+        nameElement.className = 'server-name';
+        nameElement.textContent = server.name;
+        mainInfo.appendChild(nameElement);
+
+        // Player count
+        const playersElement = document.createElement('span');
+        playersElement.className = 'server-players';
+        playersElement.textContent = `${server.playerData ? server.playerData.playerCount : 0} Online`;
+        mainInfo.appendChild(playersElement);
+
+        // Status
+        const statusElement = document.createElement('span');
+        statusElement.className = `server-status ${server.online ? 'online' : 'offline'}`;
+        statusElement.textContent = server.online ? 'Online' : 'Offline';
+        mainInfo.appendChild(statusElement);
+
+        serverCard.appendChild(mainInfo);
+
+        // Category tags
+        const categoryContainer = document.createElement('div');
+        categoryContainer.className = 'server-categories';
+
+        if (server.categories && Array.isArray(server.categories)) {
+            const prioritizedCategories = server.categories
+                .sort((a, b) => categoryOrder.indexOf(a) - categoryOrder.indexOf(b))
+                .slice(0, 3);
+
+            prioritizedCategories.forEach(category => {
+                if (categoryColors[category]) {
+                    const tagElement = document.createElement('span');
+                    tagElement.className = 'category-tag';
+                    tagElement.textContent = categoryColors[category].label;
+                    tagElement.style.backgroundColor = categoryColors[category].color;
+                    categoryContainer.appendChild(tagElement);
+                }
+            });
+        }
+
+        serverCard.appendChild(categoryContainer);
+
+        // Favorite button (moved to be a direct child of serverCard for simpler layout)
         const favoriteBtn = document.createElement('button');
         favoriteBtn.className = `favorite-btn ${isServerFavorite(server._id) ? 'active' : ''}`;
         favoriteBtn.innerHTML = '★';
         favoriteBtn.title = isServerFavorite(server._id) ? 'Remove from favorites' : 'Add to favorites';
         favoriteBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent triggering the server card click
+            e.stopPropagation();
             toggleFavorite(server);
-            // Update only this button's state
             favoriteBtn.classList.toggle('active');
             favoriteBtn.title = favoriteBtn.classList.contains('active') ? 'Remove from favorites' : 'Add to favorites';
         });
-        serverCardWrapper.appendChild(favoriteBtn);
+        serverCard.appendChild(favoriteBtn);
 
-        // Server name
-        const nameElement = document.createElement('div');
-        nameElement.className = 'server-name';
-        nameElement.textContent = server.name;
-
-        // Player count
-        const playersElement = document.createElement('div');
-        playersElement.className = 'server-players';
-        playersElement.textContent = `Players: ${server.playerData ? server.playerData.playerCount : 0}`;
-
-        // Server description if available
-        if (server.motd) {
-            const descriptionElement = document.createElement('div');
-            descriptionElement.className = 'server-description';
-
-            // Parse and format the MOTD with HTML-like tags
-            const formattedMotd = parseMotdFormatting(server.motd);
-            descriptionElement.innerHTML = formattedMotd;
-
-            serverCard.appendChild(descriptionElement);
-        }
-
-        // Append elements
-        serverCard.appendChild(nameElement);
-        serverCard.appendChild(playersElement);
-        serverCardWrapper.appendChild(serverCard);
-
-        return serverCardWrapper;
+        return serverCard;
     }
 
-    // Function to display servers
+    // Function to display servers (modified to use the simplified card)
     function displayServers(servers) {
-        console.log('displayServers called with:', servers);
         serversContainer.innerHTML = '';
         servers.forEach((server, index) => {
-            console.log('Processing server:', server.name, server._id);
-            const serverCardWrapper = createServerCard(server, index);
-            if (serverCardWrapper) {
-                serversContainer.appendChild(serverCardWrapper);
+            const serverCard = createServerCard(server, index); 
+            if (serverCard) {
+                serversContainer.appendChild(serverCard);
             } else {
                 console.error('createServerCard returned null for:', server.name);
             }
         });
     }
 
+    // Function to display favorite servers (modified to use the simplified card)
+    function displayFavorites() {
+        favoritesContainer.innerHTML = '';
+        if (favoriteServers.length === 0) {
+            favoritesSection.style.display = 'none';
+            return;
+        }
+        favoritesSection.style.display = 'block';
+        favoriteServers.forEach(server => {
+            const serverCard = createServerCard(server, null, true); // Passing true for isFavorite
+            favoritesContainer.appendChild(serverCard);
+        });
+        document.getElementById('favorites-count').textContent = `${favoriteServers.length} tracked`;
+    }
 
     // Search servers function
     function searchServers() {
@@ -271,7 +295,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Main function to load and display servers
     async function loadServers() {
- // !DECLARED TWICE   const loadingElement = document.getElementById('loading');
         const errorElement = document.getElementById('error');
         const serversContainer = document.getElementById('servers-container');
 
