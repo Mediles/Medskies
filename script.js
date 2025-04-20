@@ -301,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Event listeners
-   // ! searchButton.addEventListener('click', searchServers);
+    searchButton.addEventListener('click', searchServers);
 
     searchInput.addEventListener('keyup', (event) => {
         if (event.key === 'Enter') {
