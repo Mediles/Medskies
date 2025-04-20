@@ -10,17 +10,17 @@ type(scope): description
 
 - **type**: The action or purpose of the commit
 - **scope**: The area or module impacted (optional)
-- **description**: A concise summary in present tense
+- **description**: A concise summary in past tense
 
 ## Commit Types
 
 ### 1. feat (Feature)
 - For new features or functionality
-- Example: `feat(ui): add dark mode toggle`
+- Example: `feat(ui): added dark mode toggle`
 
 ### 2. fix (Bug Fix)
 - For bug fixes
-- Example: `fix(layout): resolve responsive grid issues`
+- Example: `fix(layout): resolved responsive grid issues`
 
 ### 3. docs (Documentation)
 - For documentation changes
@@ -28,31 +28,31 @@ type(scope): description
 
 ### 4. chore (Chores)
 - For maintenance tasks
-- Example: `chore(deps): update dependencies`
+- Example: `chore(deps): updated dependencies`
 
 ### 5. style (Code Style)
 - For formatting changes
-- Example: `style(css): fix indentation`
+- Example: `style(css): fixed indentation`
 
 ### 6. refactor (Code Refactoring)
 - For code restructuring
-- Example: `refactor(js): simplify server card logic`
+- Example: `refactor(js): simplified server card logic`
 
 ### 7. perf (Performance)
 - For performance improvements
-- Example: `perf(images): optimize asset loading`
+- Example: `perf(images): optimized asset loading`
 
 ### 8. test (Testing)
 - For test-related changes
-- Example: `test(api): add server status tests`
+- Example: `test(api): added server status tests`
 
 ### 9. build (Build System)
 - For build system changes
-- Example: `build(vite): update build configuration`
+- Example: `build(vite): updated build configuration`
 
 ### 10. ci (Continuous Integration)
 - For CI/CD changes
-- Example: `ci(actions): add automated testing`
+- Example: `ci(actions): added automated testing`
 
 ### 11. revert (Reverting Changes)
 - For undoing changes
@@ -71,26 +71,27 @@ type(scope): description
 5. Reference issues/tickets when applicable
 6. Always use double quotes around commit messages
    - Required when using parentheses for type/scope to prevent shell syntax issues
-   - Example: git commit -m "style(css): update layout"
-   - Example: git commit -m "feat(auth): implement login flow"
-   - NOT: git commit -m style(css): update layout
-   - NOT: git commit -m 'feat(auth): implement login flow'
+   - Example: git commit -m "style(css): updated layout"
+   - Example: git commit -m "feat(auth): implemented login flow"
+   - NOT: git commit -m style(css): updated layout
+   - NOT: git commit -m 'feat(auth): implemented login flow'
+   - NOT: git commit -m "feat(auth): implement login flow" (use past tense)
 
 ## Examples
 
 ```
-feat(server-list): add server filtering system
-fix(search): correct search input validation
-docs(api): update API documentation
-chore(cleanup): remove unused CSS classes
-style(format): standardize code formatting
-refactor(components): extract shared logic
-perf(loading): improve initial load time
-test(utils): add unit tests for helpers
-build(deps): update package versions
-ci(deploy): add deployment workflow
-revert: return to stable version
-merge(develop): sync with main branch
+feat(server-list): added server filtering system
+fix(search): corrected search input validation
+docs(api): updated API documentation
+chore(cleanup): removed unused CSS classes
+style(format): standardized code formatting
+refactor(components): extracted shared logic
+perf(loading): improved initial load time
+test(utils): added unit tests for helpers
+build(deps): updated package versions
+ci(deploy): added deployment workflow
+revert: returned to stable version
+merge(develop): synced with main branch
 ```
 
 ## Automated Commit Commands
