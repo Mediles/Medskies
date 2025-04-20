@@ -69,6 +69,12 @@ type(scope): description
 3. Keep descriptions concise but meaningful
 4. Include scope when relevant
 5. Reference issues/tickets when applicable
+6. Always use double quotes around commit messages
+   - Required when using parentheses for type/scope to prevent shell syntax issues
+   - Example: git commit -m "style(css): update layout"
+   - Example: git commit -m "feat(auth): implement login flow"
+   - NOT: git commit -m style(css): update layout
+   - NOT: git commit -m 'feat(auth): implement login flow'
 
 ## Examples
 
