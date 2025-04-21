@@ -22,16 +22,17 @@ jobs:
         with:
           args: |
             🔔 **New Activity on Medskies**
-            
+
             🤖 Event: ${{ github.event_name }}
             👤 Actor: **${{ github.actor }}**
-            
+
             📝 Details:
             `${{ github.event_name == 'pull_request' && format('PR {0} - {1}', github.event.pull_request.number, github.event.pull_request.title) || github.event.head_commit.message }}`
-            
+
             🔗 [View Changes](<${{ github.event.pull_request.html_url || github.event.head_commit
             .url }}>)
-            
+
+            🚀 [See it Live](<https://mediles.github.io/Medskies/>)
+
             📦 Repository: [${{ github.repository }}](<${{ github.server_url }}/${{ github
             .repository }}>)
-            
