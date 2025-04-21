@@ -51,5 +51,9 @@ coverage/
 # Private documentation
 docs/privatedocs/*
 
+# Project plans
+TODO/*
+
 # Project specific
 .qodo
+Todo.json
