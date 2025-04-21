@@ -1,0 +1,18 @@
+.command-footer {
+    background: var(--color-surface);
+    padding: 1rem;
+    margin-top: auto;
+}
+
+.footer-grid {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-metrics {
+    display: flex;
+    gap: 1rem;
+}

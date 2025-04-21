@@ -1,0 +1,25 @@
+#favorites-section {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+    border-radius: 6px;
+}
+
+#favorites-section h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+}
+
+#favorites-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+#favorites-count {
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+}

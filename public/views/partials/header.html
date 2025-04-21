@@ -1,0 +1,39 @@
+<!-- Header Component -->
+<header class="command-center">
+    <div class="header-grid">
+        <div class="brand-section">
+            <div class="logo-container">
+                <span class="mdi mdi-minecraft"></span>
+            </div>
+            <div class="title-stack">
+                <h1>Medskies Analytics</h1>
+                <p class="subtitle">Real-time Minehut Intelligence</p>
+            </div>
+        </div>
+        
+        <div class="control-deck">
+            <div class="search-matrix">
+                <div class="search-field">
+                    <span class="mdi mdi-magnify"></span>
+                    <input type="text" id="search-input" placeholder="Search servers, tags, or metadata...">
+                </div>
+                <div class="filter-chips">
+                    <button id="search-button" class="chip" data-filter="name"><span class="mdi mdi-server"></span>Name</button>
+                    <button class="chip" data-filter="tags"><span class="mdi mdi-tag"></span>Tags</button>
+                    <button class="chip" data-filter="players"><span class="mdi mdi-account-group"></span>Players</button>
+                </div>
+            </div>
+            
+            <div class="metrics-dashboard">
+                <div class="metric">
+                    <span id="total-servers" class="metric-value">--</span>
+                    <span class="metric-label">Active Servers</span>
+                </div>
+                <div class="metric">
+                    <span id="total-players" class="metric-value">--</span>
+                    <span class="metric-label">Online Players</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

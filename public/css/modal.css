@@ -1,0 +1,53 @@
+.intel-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+}
+
+.modal-matrix {
+    position: relative;
+    background: var(--color-surface);
+    max-width: 600px;
+    width: 90%;
+    margin: 2rem auto;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-lg);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.close-modal {
+    background: transparent;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+
+.server-detail {
+    margin: 1rem 0;
+    padding: 0.5rem;
+    background: var(--color-surface-accent);
+    border-radius: 4px;
+}
+
+.server-detail-label {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+}
+
+.server-detail-value {
+    color: var(--color-text);
+    font-weight: 500;
+}

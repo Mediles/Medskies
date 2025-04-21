@@ -1,0 +1,85 @@
+@media (max-width: 1200px) {
+    .server-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .server-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .server-grid {
+        grid-template-columns: 1fr;
+        padding: 0.5rem;
+    }
+
+    .metrics-dashboard {
+        flex-wrap: wrap;
+    }
+
+    .modal-matrix {
+        width: 95%;
+        margin: 1rem auto;
+        padding: 1rem;
+    }
+
+    .footer-grid {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .footer-metrics {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .filter-chips {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .server-main-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .server-players {
+        margin-left: 0;
+    }
+
+    .server-status {
+        margin-left: 0;
+        margin-top: 0.2rem;
+    }
+
+    .server-categories {
+        margin-top: 0.5rem;
+    }
+
+    .tag-container {
+        justify-content: center;
+    }
+
+    .server-card {
+        padding: 0.75rem;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .favorite-btn {
+        margin-left: 0;
+        margin-top: 0.5rem;
+        align-self: flex-end;
+    }
+
+    .rank {
+        width: 1.75rem;
+        height: 1.75rem;
+        font-size: 0.8rem;
+    }
+}
