@@ -57,3 +57,4 @@ TODO/*
 # Project specific
 .qodo
 Todo.json
+.snapshots/*
