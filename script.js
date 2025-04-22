@@ -308,7 +308,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
             favoriteServers = loadFavorites();
             let initialServers = await fetchMinehutServers();
-            allServers = initialServers.map(server => ({ ...server, categories: server.staticInfo.allCategories }));
+            allServers = initialServers.map(server => {
+                console.log(`Initial Server ${server.name} Categories:`, server.staticInfo?.allCategories); // ![DEBUG 1]
+                return { ...server, categories: server.staticInfo?.allCategories };
+            });
     
             // Fetch detailed information for the top N servers
             const serversToDetail = initialServers.slice(0, initialLoadCount);
@@ -321,6 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     const data = await response.json();
                     if (data && data.server) {
+                        console.log(`Detailed Server ${server.name} Categories:`, data.server.categories); // ![DEBUG 2]
                         return { ...server, online: data.server.online, categories: data.server.categories };
                     } else {
                         console.error(`Detailed data for ${server.name} is missing or invalid:`, data);
@@ -341,6 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     allServers[i].categories = detailedServers[i].categories;
                 }
             }
+            console.log("All Servers After Detail Fetch (First Server):", allServers[0]?.categories); // ![DEBUG 3]
     
             loadingElement.style.display = 'none';
             displayFavorites();
