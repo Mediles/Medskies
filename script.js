@@ -308,7 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
             favoriteServers = loadFavorites();
             let initialServers = await fetchMinehutServers();
-            allServers = [...initialServers];
+            allServers = initialServers.map(server => ({ ...server, categories: server.staticInfo.allCategories }));
     
             // Fetch detailed information for the top N servers
             const serversToDetail = initialServers.slice(0, initialLoadCount);
