@@ -15,9 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Store all servers for searching
     let allServers = [];
-    // Store favorite servers
-    let favoriteServers = [];
-    console.log("[INIT] favoriteServers:", favoriteServers);
+    // Store favorite servers and IMMEDIATELY LOAD THEM
+    let favoriteServers = loadFavorites();
+    console.log("[INIT] favoriteServers:", favoriteServers); // should now show favorites if any
 
     // Function to parse MOTD formatting with color tags
     function parseMotdFormatting(motd) {
@@ -111,9 +111,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (storedFavorites) {
             try {
                 const parsedFavorites = JSON.parse(storedFavorites);
-                favoriteServers = parsedFavorites.filter(fav => fav && fav._id);
-                console.log("[LOAD] Parsed and Filtered Favorites:", favoriteServers);
-                return favoriteServers;
+                const filteredFavorites = parsedFavorites.filter(fav => fav && fav._id);
+                console.log("[LOAD] Parsed and Filtered Favorites:", filteredFavorites);
+                return favoriteServers; // should return the loaded and filtered array
             } catch (e) {
                 console.error('Error parsing favorites from local storage:', e);
                 return [];
