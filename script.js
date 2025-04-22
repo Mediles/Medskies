@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         favoritesSection.style.display = 'block';
         favoriteServers.forEach(server => {
-            const serverCard = createServerCard(server, null, true); // Passing true for isFavorite
+            const serverCard = createServerCard(server, null, true);
             if (serverCard) {
                 favoritesContainer.appendChild(serverCard);
             } else {
@@ -295,6 +295,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         document.getElementById('favorites-count').textContent = `${favoriteServers.length} tracked`;
+
+        // Update the favorite button in the MAIN server list
+        const allServerCards = document.querySelectorAll('.server-card');
+        allServerCards.forEach(card => {
+            const serverId = card.dataset.serverId;
+            const favoriteButton = card.querySelector('.favorite-btn');
+            if (favoriteButton) {
+                favoriteButton.classList.toggle('active', isServerFavorite(serverId));
+                favoriteButton.title = isServerFavorite(serverId) ? 'Remove from favorites' : 'Add to favorites';
+            }
+        });
     }
 
     // Search servers function
