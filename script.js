@@ -345,7 +345,6 @@ document.addEventListener('DOMContentLoaded', () => {
             serversContainer.innerHTML = '';
     
             // favoriteServers is now initialized at the top of the DOMContentLoaded block
-            ////favoriteServers = loadFavorites();
             console.log("[INIT] favoriteServers (after load):", favoriteServers);
             let initialServers = await fetchMinehutServers();
             allServers = initialServers.map(server => {
@@ -357,7 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const serversToDetail = initialServers.slice(0, initialLoadCount);
             const detailedServers = await Promise.all(serversToDetail.map(async (server) => {
                 try {
-                    const response = await fetch(`https://api.minehut.com/server/${server._id}`);
+                    const response = await fetch(`https://api.minehut.com/server/${server.staticInfo._id}`);
                     if (!response.ok) {
                         console.error(`[DETAIL-FAIL] Failed to fetch details for ${server.name}: ${response.status}`);
                         return server;
@@ -365,7 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const data = await response.json();
                     if (data && data.server) {
                         console.log(`[DETAIL-SUCCESS] Server ${server.name} Detailed Categories:`, data.server.categories);
-                        return {...server, online: data.server.online, categories: data.server.categories || server.allCategories || []};
+                        return {...server, online: data.server.online, categories: data.server.categories || server.allCategories || [], _id: data.server._id };
                     }
                     console.log(`[DETAIL-MISSING] Detailed data missing for ${server.name}:`, data);
                     return server;
@@ -377,13 +376,14 @@ document.addEventListener('DOMContentLoaded', () => {
     
             // Update servers with detailed info
             for (let i = 0; i < detailedServers.length && i < allServers.length; i++) {
-                console.log(`[MERGE] Server ${allServers[i]?.name} Before Merge - Categories:`, allServers[i]?.categories, "Detailed Categories:", detailedServers[i]?.categories, "Online:", detailedServers[i]?.online); // before merge
+                console.log(`[MERGE] Server ${allServers[i]?.name} Before Merge - Categories:`, allServers[i]?.categories, "Detailed Categories:", detailedServers[i]?.categories, "Online:", detailedServers[i]?.online, "_id (before):", allServers[i]?._id); // before merge
                 allServers[i] = {
                     ...allServers[i],
-                    online: detailedServers[i]?.online !== undefined ? detailedServers[i].online : allServers[i].online, // ensures online is updated only if present
-                    categories: detailedServers[i]?.categories || allServers[i].categories
+                    online: detailedServers[i]?.online !== undefined ? detailedServers[i].online : allServers[i].online,
+                    categories: detailedServers[i]?.categories || allServers[i].categories,
+                    _id: detailedServers[i]?._id || allServers[i]?.staticInfo?._id // Prioritizes detailed _id, then initial
                 };
-                console.log(`[MERGE] Server ${allServers[i]?.name} After Merge - Categories:`, allServers[i]?.categories, "Online:", allServers[i]?.online); // after merge
+                console.log(`[MERGE] Server ${allServers[i]?.name} After Merge - Categories:`, allServers[i]?.categories, "Online:", allServers[i]?.online, "_id (after):", allServers[i]?._id); // after merge
             }
 
             console.log("[FINAL - First Server]", allServers[0]); // logs the final state of the first server
