@@ -327,9 +327,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }));
     
-            // Update the first N servers in our allServers array with the detailed info
+            // Update the first N servers in our allServers array with the detailed info (including online status)
             for (let i = 0; i < detailedServers.length && i < allServers.length; i++) {
-                allServers[i] = detailedServers[i];
+                if (detailedServers[i].online !== undefined) {
+                    allServers[i] = { ...allServers[i], online: detailedServers[i].online };
+                }
+                if (detailedServers[i].categories) {
+                    allServers[i].categories = detailedServers[i].categories;
+                }
             }
     
             loadingElement.style.display = 'none';
