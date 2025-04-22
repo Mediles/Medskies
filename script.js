@@ -336,7 +336,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadServers() {
         const errorElement = document.getElementById('error');
         const serversContainer = document.getElementById('servers-container');
-        const initialLoadCount = 20;
+        const initialLoadCount = 50;
     
         try {
             loadingElement.style.display = 'block';
@@ -352,26 +352,27 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     
             // Fetch detailed information for the top N servers
-            const serversToDetail = initialServers.slice(0, initialLoadCount);
-            const detailedServers = await Promise.all(serversToDetail.map(async (server) => {
+            const detailedServersPromises = allServers.map(async (server) => {
                 try {
                     const response = await fetch(`https://api.minehut.com/server/${server.staticInfo._id}`);
                     if (!response.ok) {
                         console.error(`[DETAIL-FAIL] Failed to fetch details for ${server.name}: ${response.status}`);
-                        return server;
+                        return { ...server, _id: server.staticInfo._id };
                     }
                     const data = await response.json();
                     if (data && data.server) {
-                        console.log(`[DETAIL-SUCCESS] Server ${server.name} Detailed Categories:`, data.server.categories);
-                        return {...server, online: data.server.online, categories: data.server.categories || server.allCategories || [], _id: data.server._id };
+                        console.log(`[DETAIL-SUCCESS] Server ${server.name} Detailed Info (Online: ${data.server.online}):`, data.server.categories);
+                        return { ...server, online: data.server.online, categories: data.server.categories || server.allCategories || [], _id: data.server._id };
                     }
                     console.log(`[DETAIL-MISSING] Detailed data missing for ${server.name}:`, data);
-                    return server;
+                    return { ...server, _id: server.staticInfo._id };
                 } catch (error) {
                     console.error(`[DETAIL-ERROR] Error fetching details for ${server.name}:`, error);
-                    return server;
+                    return { ...server, _id: server.staticInfo._id };
                 }
-            }));
+            });
+
+            const detailedServers = await Promise.all(detailedServersPromises);
     
             // Update servers with detailed info
             for (let i = 0; i < detailedServers.length && i < allServers.length; i++) {
