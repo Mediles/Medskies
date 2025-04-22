@@ -9,15 +9,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('server-modal');
     const closeBtn = document.querySelector('.close-modal');
 
-    closeBtn.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
+
 
     // Store all servers for searching
     let allServers = [];
     // Store favorite servers and IMMEDIATELY LOAD THEM
-    let favoriteServers; // declaring first
+    let favoriteServers = loadFavorites();
     console.log("[INIT] favoriteServers:", favoriteServers);
+
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
 
     // Function to parse MOTD formatting with color tags
     function parseMotdFormatting(motd) {
@@ -338,7 +340,8 @@ document.addEventListener('DOMContentLoaded', () => {
             errorElement.style.display = 'none';
             serversContainer.innerHTML = '';
     
-            favoriteServers = loadFavorites(); // Initialized favoriteServers AFTER declaring the function
+            // favoriteServers is now initialized at the top of the DOMContentLoaded block
+            ////favoriteServers = loadFavorites();
             console.log("[INIT] favoriteServers (after load):", favoriteServers);
             let initialServers = await fetchMinehutServers();
             allServers = initialServers.map(server => {
