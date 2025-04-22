@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Check if a server is in favorites
     function isServerFavorite(serverId) {
-        return favoriteServers.some(server => server.staticInfo._id === serverId);
+        return favoriteServers.some(server => server._id === serverId);
     }
 
     // Add or remove a server from favorites
