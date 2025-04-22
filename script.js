@@ -309,8 +309,8 @@ document.addEventListener('DOMContentLoaded', () => {
             favoriteServers = loadFavorites();
             let initialServers = await fetchMinehutServers();
             allServers = initialServers.map(server => {
-                console.log(`Initial Server ${server.name} Categories:`, server.staticInfo?.allCategories); // ![DEBUG 1]
-                return { ...server, categories: server.staticInfo?.allCategories };
+                console.log(`[INITIAL] Server ${server.name} Categories:`, server.allCategories); // ![DEBUG 1]
+                return {...server, categories: server.allCategories || [], online: false};
             });
     
             // Fetch detailed information for the top N servers
@@ -319,33 +319,34 @@ document.addEventListener('DOMContentLoaded', () => {
                 try {
                     const response = await fetch(`https://api.minehut.com/server/${server._id}`);
                     if (!response.ok) {
-                        console.error(`Failed to fetch details for ${server.name}: ${response.status}`);
+                        console.error(`[DETAIL-FAIL] Failed to fetch details for ${server.name}: ${response.status}`);
                         return server;
                     }
                     const data = await response.json();
                     if (data && data.server) {
-                        console.log(`Detailed Server ${server.name} Categories:`, data.server.categories); // ![DEBUG 2]
-                        return { ...server, online: data.server.online, categories: data.server.categories };
-                    } else {
-                        console.error(`Detailed data for ${server.name} is missing or invalid:`, data);
-                        return server;
+                        console.log(`[DETAIL-SUCCESS] Server ${server.name} Detailed Categories:`, data.server.categories); // ![DEBUG 2]
+                        return {...server, online: data.server.online, categories: data.server.categories || server.allCategories || []};
                     }
+                    console.log(`[DETAIL-MISSING] Detailed data missing for ${server.name}:`, data);
+                    return server;
                 } catch (error) {
-                    console.error(`Error fetching details for ${server.name}:`, error);
+                    console.error(`[DETAIL-ERROR] Error fetching details for ${server.name}:`, error);
                     return server;
                 }
             }));
     
-            // Update the first N servers in our allServers array with the detailed info (including online status)
+            // Update servers with detailed info
             for (let i = 0; i < detailedServers.length && i < allServers.length; i++) {
-                if (detailedServers[i]?.online !== undefined) {
-                    allServers[i] = { ...allServers[i], online: detailedServers[i].online };
-                }
-                if (detailedServers[i]?.categories) {
-                    allServers[i].categories = detailedServers[i].categories;
-                }
+                console.log(`[MERGE] Server ${allServers[i]?.name} Before Merge - Categories:`, allServers[i]?.categories, "Detailed Categories:", detailedServers[i]?.categories, "Online:", detailedServers[i]?.online); // before merge
+                allServers[i] = {
+                    ...allServers[i],
+                    online: detailedServers[i]?.online !== undefined ? detailedServers[i].online : allServers[i].online, // ensures online is updated only if present
+                    categories: detailedServers[i]?.categories || allServers[i].categories
+                };
+                console.log(`[MERGE] Server ${allServers[i]?.name} After Merge - Categories:`, allServers[i]?.categories, "Online:", allServers[i]?.online); // after merge
             }
-            console.log("All Servers After Detail Fetch (First Server):", allServers[0]?.categories); // ![DEBUG 3]
+
+            console.log("[FINAL - First Server]", allServers[0]); // logs the final state of the first server
     
             loadingElement.style.display = 'none';
             displayFavorites();
