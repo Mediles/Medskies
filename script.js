@@ -108,7 +108,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const storedFavorites = localStorage.getItem('minehutFavorites');
         if (storedFavorites) {
             try {
-                return JSON.parse(storedFavorites);
+                const parsedFavorites = JSON.parse(storedFavorites);
+                favoriteServers = parsedFavorites.filter(fav => fav && fav._id);
+                return favoriteServers;
             } catch (e) {
                 console.error('Error parsing favorites from local storage:', e);
                 return [];
@@ -132,18 +134,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const index = favoriteServers.findIndex(s => s._id === server._id);
 
         if (index === -1) {
-            // Add to favorites
             favoriteServers.push(server);
         } else {
-            // Remove from favorites
             favoriteServers.splice(index, 1);
         }
 
-        // Save to local storage
         saveFavorites();
-
-        // Update only favorites display without redrawing all servers
         displayFavorites();
+
+        // Update the favorite button on ALL server cards
+        const allFavoriteButtons = document.querySelectorAll('.server-card .favorite-btn');
+        allFavoriteButtons.forEach(btn => {
+            const serverId = btn.parentNode.dataset.serverId;
+            if (serverId === server._id) {
+                btn.classList.toggle('active', isServerFavorite(serverId));
+                btn.title = isServerFavorite(serverId) ? 'Remove from favorites' : 'Add to favorites';
+            }
+        });
     }
 
     // Category color mapping and display order
@@ -274,7 +281,11 @@ document.addEventListener('DOMContentLoaded', () => {
         favoritesSection.style.display = 'block';
         favoriteServers.forEach(server => {
             const serverCard = createServerCard(server, null, true); // Passing true for isFavorite
-            favoritesContainer.appendChild(serverCard);
+            if (serverCard) {
+                favoritesContainer.appendChild(serverCard);
+            } else {
+                console.error('createServerCard returned null for favorite:', server.name);
+            }
         });
         document.getElementById('favorites-count').textContent = `${favoriteServers.length} tracked`;
     }
