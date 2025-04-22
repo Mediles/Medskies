@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('server-modal');
     const closeBtn = document.querySelector('.close-modal');
 
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
 
     // Store all servers for searching
     let allServers = [];
@@ -145,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Category color mapping and display order
     const categoryColors = {
-        "pvp": { label: "⚔ PvP", color: "#DF3D4B" },
+        "pvp": { label: "⚔️ PvP", color: "#DF3D4B" },
         "lifesteal": { label: "❤️ Lifesteal", color: "#70C8D2" },
         "smp": { label: "🏡 SMP", color: "#0DC255" },
         "gens": { label: "⚡ Gens", color: "#484372" },
