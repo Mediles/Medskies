@@ -320,7 +320,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         return server;
                     }
                     const data = await response.json();
-                    return { ...server, online: data.server.online, categories: data.server.categories };
+                    if (data && data.server) {
+                        return { ...server, online: data.server.online, categories: data.server.categories };
+                    } else {
+                        console.error(`Detailed data for ${server.name} is missing or invalid:`, data);
+                        return server;
+                    }
                 } catch (error) {
                     console.error(`Error fetching details for ${server.name}:`, error);
                     return server;
