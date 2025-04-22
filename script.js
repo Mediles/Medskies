@@ -16,8 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Store all servers for searching
     let allServers = [];
     // Store favorite servers and IMMEDIATELY LOAD THEM
-    let favoriteServers = loadFavorites();
-    console.log("[INIT] favoriteServers:", favoriteServers); // should now show favorites if any
+    let favoriteServers; // declaring first
+    console.log("[INIT] favoriteServers:", favoriteServers);
 
     // Function to parse MOTD formatting with color tags
     function parseMotdFormatting(motd) {
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to fetch servers from Minehut API
     // API Status monitoring
-    let lastApiStatus = 'unknown';
+    let lastApiStatus = 'unknown'; // ? Why is this here? Currently not being used.
     let lastApiCheck = 0;
     const API_CHECK_INTERVAL = 30000; // Check every 30 seconds
 
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const parsedFavorites = JSON.parse(storedFavorites);
                 const filteredFavorites = parsedFavorites.filter(fav => fav && fav._id);
                 console.log("[LOAD] Parsed and Filtered Favorites:", filteredFavorites);
-                return favoriteServers; // should return the loaded and filtered array
+                return filteredFavorites; // the loaded and parsed favorites from local storage
             } catch (e) {
                 console.error('Error parsing favorites from local storage:', e);
                 return [];
@@ -338,11 +338,11 @@ document.addEventListener('DOMContentLoaded', () => {
             errorElement.style.display = 'none';
             serversContainer.innerHTML = '';
     
-            favoriteServers = loadFavorites();
-            console.log("[LOADSERVERS] After loading, favoriteServers:", favoriteServers);
+            favoriteServers = loadFavorites(); // Initialized favoriteServers AFTER declaring the function
+            console.log("[INIT] favoriteServers (after load):", favoriteServers);
             let initialServers = await fetchMinehutServers();
             allServers = initialServers.map(server => {
-                console.log(`[INITIAL] Server ${server.name} Categories:`, server.allCategories); // ![DEBUG 1]
+                console.log(`[INITIAL] Server ${server.name} Categories:`, server.allCategories);
                 return {...server, categories: server.allCategories || [], online: false};
             });
     
@@ -357,7 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     const data = await response.json();
                     if (data && data.server) {
-                        console.log(`[DETAIL-SUCCESS] Server ${server.name} Detailed Categories:`, data.server.categories); // ![DEBUG 2]
+                        console.log(`[DETAIL-SUCCESS] Server ${server.name} Detailed Categories:`, data.server.categories);
                         return {...server, online: data.server.online, categories: data.server.categories || server.allCategories || []};
                     }
                     console.log(`[DETAIL-MISSING] Detailed data missing for ${server.name}:`, data);
