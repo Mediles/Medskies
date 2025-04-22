@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let allServers = [];
     // Store favorite servers
     let favoriteServers = [];
+    console.log("[INIT] favoriteServers:", favoriteServers);
 
     // Function to parse MOTD formatting with color tags
     function parseMotdFormatting(motd) {
@@ -106,10 +107,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load favorites from local storage
     function loadFavorites() {
         const storedFavorites = localStorage.getItem('minehutFavorites');
+        console.log("[LOAD] Stored Favorites:", storedFavorites);
         if (storedFavorites) {
             try {
                 const parsedFavorites = JSON.parse(storedFavorites);
                 favoriteServers = parsedFavorites.filter(fav => fav && fav._id);
+                console.log("[LOAD] Parsed and Filtered Favorites:", favoriteServers);
                 return favoriteServers;
             } catch (e) {
                 console.error('Error parsing favorites from local storage:', e);
@@ -121,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Save favorites to local storage
     function saveFavorites() {
+        console.log("[SAVE] Saving Favorites:", favoriteServers);
         localStorage.setItem('minehutFavorites', JSON.stringify(favoriteServers));
     }
 
@@ -135,8 +139,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (index === -1) {
             favoriteServers.push(server);
+            console.log("[TOGGLE] Added to Favorites:", server.name, "Current Favorites:", favoriteServers);
         } else {
             favoriteServers.splice(index, 1);
+            console.log("[TOGGLE] Removed from Favorites:", server.name, "Current Favorites:", favoriteServers);
         }
 
         saveFavorites();
@@ -274,6 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to display favorite servers (modified to use the simplified card)
     function displayFavorites() {
         favoritesContainer.innerHTML = '';
+        console.log("[DISPLAY-FAV] Rendering Favorites:", favoriteServers);
         if (favoriteServers.length === 0) {
             favoritesSection.style.display = 'none';
             return;
@@ -321,6 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
             serversContainer.innerHTML = '';
     
             favoriteServers = loadFavorites();
+            console.log("[LOADSERVERS] After loading, favoriteServers:", favoriteServers);
             let initialServers = await fetchMinehutServers();
             allServers = initialServers.map(server => {
                 console.log(`[INITIAL] Server ${server.name} Categories:`, server.allCategories); // ![DEBUG 1]
