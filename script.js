@@ -137,10 +137,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Add or remove a server from favorites
     function toggleFavorite(server) {
-        const index = favoriteServers.findIndex(s => s.staticInfo._id === server.staticInfo._id);
+        const index = favoriteServers.findIndex(s => s._id === server._id);
 
         if (index === -1) {
-            favoriteServers.push(server.staticInfo);
+            favoriteServers.push(server);
             console.log("[TOGGLE] Added to Favorites:", server.name, "Current Favorites:", favoriteServers);
         } else {
             favoriteServers.splice(index, 1);
@@ -190,8 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function createServerCard(server, index, isFavorite = false) {
         const serverCard = document.createElement('div');
         serverCard.className = 'server-card';
-        // **CRITICAL UPDATE HERE:**
-        serverCard.dataset.serverId = server.staticInfo._id;
+        serverCard.dataset.serverId = server._id;
 
         // Add click event to show server details (will be implemented later)
         serverCard.addEventListener('click', () => showServerDetails(server));
