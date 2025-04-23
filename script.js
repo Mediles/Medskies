@@ -259,11 +259,11 @@ document.addEventListener('DOMContentLoaded', () => {
         favoriteBtn.className = `favorite-btn ${isServerFavorite(server._id) ? 'active' : ''}`;
         favoriteBtn.innerHTML = '★';
         favoriteBtn.title = isServerFavorite(server._id) ? 'Remove from favorites' : 'Add to favorites';
-        favoriteBtn.addEventListener('click', (e) => {
+        favoriteBtn.addEventListener('click', function(e) { // regular function now
             e.stopPropagation();
             toggleFavorite(server);
-            favoriteBtn.classList.toggle('active');
-            favoriteBtn.title = favoriteBtn.classList.contains('active') ? 'Remove from favorites' : 'Add to favorites';
+            this.classList.toggle('active');
+            this.title = this.classList.contains('active') ? 'Remove from favorites' : 'Add to favorites';
         });
         serverCard.appendChild(favoriteBtn);
 
