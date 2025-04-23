@@ -114,9 +114,10 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const parsedFavorites = JSON.parse(storedFavorites);
                 console.log("[LOAD] Parsed Favorites:", parsedFavorites);
-                const filteredFavorites = parsedFavorites.filter(fav => fav && fav._id && fav.serverPlan);
-                console.log("[LOAD] Filtered Favorites:", filteredFavorites);
-                return filteredFavorites; // the loaded and parsed favorites from local storage
+                // // const filteredFavorites = parsedFavorites.filter(fav => fav && fav._id && fav.serverPlan);
+                // // console.log("[LOAD] Filtered Favorites:", filteredFavorites);
+                // // return filteredFavorites; // the loaded and parsed favorites from local storage
+                return parsedFavorites || [];
             } catch (e) {
                 console.error('Error parsing favorites from local storage:', e);
                 return [];
@@ -127,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Save favorites to local storage
     function saveFavorites() {
-        console.log("[SAVE] Saving Favorites:", favoriteServers);
+        console.log("[SAVE] Saving Favorites (full objects):", favoriteServers);
         localStorage.setItem('minehutFavorites', JSON.stringify(favoriteServers));
     }
 
@@ -138,7 +139,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Add or remove a server from favorites
     function toggleFavorite(server) {
-        const index = favoriteServers.findIndex(s => s._id === server._id);
+        // Normalizing the server object to make sure it has top-level _id
+        const normalizedServer = server.staticInfo ? { _id: server.staticInfo._id, serverPlan: server.staticInfo.serverPlan } : { _id: server._id, serverPlan: server.serverPlan };
+        const index = favoriteServers.findIndex(s => s._id === normalizedServer._id);
 
         if (index === -1) {
             favoriteServers.push(server);
@@ -155,11 +158,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const allFavoriteButtons = document.querySelectorAll('.server-card .favorite-btn');
         allFavoriteButtons.forEach(btn => {
             const serverId = btn.parentNode.dataset.serverId;
-            // **CRITICAL UPDATE HERE:**
-            const currentServerId = serverId; // Assuming data-server-id holds the top-level _id
-            const isFav = favoriteServers.some(fav => fav._id === currentServerId);
-            btn.classList.toggle('active', isFav);
-            btn.title = isFav ? 'Remove from favorites' : 'Add to favorites';
+            if (btn && serverId) {
+                const isFav = favoriteServers.some(fav => fav._id === serverId);
+                btn.classList.toggle('active', isFav);
+                btn.title = isFav ? 'Remove from favorites' : 'Add to favorites';
+            }
         });
     }
 
@@ -308,6 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const favoriteButton = card.querySelector('.favorite-btn');
             if (favoriteButton && serverId) {
                 const isFav = favoriteServers.some(fav => fav._id === serverId);
+                console.log(`[FAV-UPDATE] Server ID: ${serverId}, Is Favorite: ${isFav}`);
                 favoriteButton.classList.toggle('active', isFav);
                 favoriteButton.title = isFav ? 'Remove from favorites' : 'Add to favorites';
             }
