@@ -142,6 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Normalizing the server object to make sure it has top-level _id
         const normalizedServer = server.staticInfo ? { _id: server.staticInfo._id, serverPlan: server.staticInfo.serverPlan } : { _id: server._id, serverPlan: server.serverPlan };
         const index = favoriteServers.findIndex(s => s._id === normalizedServer._id);
+        const wasFavorite = index !== -1;
 
         if (index === -1) {
             favoriteServers.push(server);
@@ -154,16 +155,15 @@ document.addEventListener('DOMContentLoaded', () => {
         saveFavorites();
         displayFavorites();
 
-        // Update the favorite button on ALL server cards
-        const allFavoriteButtons = document.querySelectorAll('.server-card .favorite-btn');
-        allFavoriteButtons.forEach(btn => {
-            const serverId = btn.parentNode.dataset.serverId;
-            if (btn && serverId) {
-                const isFav = favoriteServers.some(fav => fav._id === serverId);
-                btn.classList.toggle('active', isFav);
-                btn.title = isFav ? 'Remove from favorites' : 'Add to favorites';
+        // Update the specific favorite button in the main list
+        const mainServerCard = document.querySelector(`.server-card[data-server-id="${server._id}"]`);
+        if (mainServerCard) {
+            const favoriteButton = mainServerCard.querySelector('.favorite-btn');
+            if (favoriteButton) {
+                favoriteButton.classList.toggle('active', !wasFavorite); // switch based on the previous state
+                favoriteButton.title = !wasFavorite ? 'Remove from favorites' : 'Add to favorites';
             }
-        });
+        }
     }
 
     // Category color mapping and display order
