@@ -290,12 +290,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         favoritesSection.style.display = 'block';
         favoriteServers.forEach(favorite => {
-            // **CRITICAL UPDATE HERE:** Pass the favorite object to createServerCard, and ensure that createServerCard uses favorite._id
-            const serverCard = createServerCard({ staticInfo: favorite }, null, true); 
+            // **CRITICAL UPDATE HERE:** Passing the favorite object directly
+            const serverCard = createServerCard(favorite, null, true);
             if (serverCard) {
                 favoritesContainer.appendChild(serverCard);
             } else {
-                console.error('createServerCard returned null for favorite:', favorite.name);
+                console.error('createServerCard returned null for favorite:', favorite?.name);
             }
         });
         document.getElementById('favorites-count').textContent = `${favoriteServers.length} tracked`;
@@ -336,7 +336,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadServers() {
         const errorElement = document.getElementById('error');
         const serversContainer = document.getElementById('servers-container');
-        const initialLoadCount = 50;
+        const initialLoadCount = 20;
     
         try {
             loadingElement.style.display = 'block';
@@ -352,7 +352,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     
             // Fetch detailed information for the top N servers
-            const detailedServersPromises = allServers.map(async (server) => {
+            const serversToDetail = initialServers.slice(0, initialLoadCount);
+            const detailedServersPromises = serversToDetail.map(async (server) => {
                 try {
                     const response = await fetch(`https://api.minehut.com/server/${server.staticInfo._id}`);
                     if (!response.ok) {
