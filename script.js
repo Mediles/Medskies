@@ -109,12 +109,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load favorites from local storage
     function loadFavorites() {
         const storedFavorites = localStorage.getItem('minehutFavorites');
-        console.log("[LOAD] Stored Favorites:", storedFavorites);
+        console.log("[LOAD] Stored Favorites (raw):", storedFavorites);
         if (storedFavorites) {
             try {
                 const parsedFavorites = JSON.parse(storedFavorites);
+                console.log("[LOAD] Parsed Favorites:", parsedFavorites);
                 const filteredFavorites = parsedFavorites.filter(fav => fav && fav._id && fav.serverPlan);
-                console.log("[LOAD] Parsed and Filtered Favorites:", filteredFavorites);
+                console.log("[LOAD] Filtered Favorites:", filteredFavorites);
                 return filteredFavorites; // the loaded and parsed favorites from local storage
             } catch (e) {
                 console.error('Error parsing favorites from local storage:', e);
@@ -305,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
         allServerCards.forEach(card => {
             const serverId = card.dataset.serverId;
             const favoriteButton = card.querySelector('.favorite-btn');
-            if (favoriteButton) {
+            if (favoriteButton && serverId) {
                 const isFav = favoriteServers.some(fav => fav._id === serverId);
                 favoriteButton.classList.toggle('active', isFav);
                 favoriteButton.title = isFav ? 'Remove from favorites' : 'Add to favorites';
