@@ -294,7 +294,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         favoritesSection.style.display = 'block';
         favoriteServers.forEach(favorite => {
-            // **CRITICAL UPDATE HERE:** Passing the favorite object directly
             const serverCard = createServerCard(favorite, null, true);
             if (serverCard) {
                 favoritesContainer.appendChild(serverCard);
@@ -304,18 +303,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         document.getElementById('favorites-count').textContent = `${favoriteServers.length} tracked`;
 
-        // Update the favorite button in the MAIN server list
-        const allServerCards = document.querySelectorAll('.server-card');
-        allServerCards.forEach(card => {
-            const serverId = card.dataset.serverId;
-            const favoriteButton = card.querySelector('.favorite-btn');
-            if (favoriteButton && serverId) {
-                const isFav = favoriteServers.some(fav => fav._id === serverId);
-                console.log(`[FAV-UPDATE] Server ID: ${serverId}, Is Favorite: ${isFav}`);
-                favoriteButton.classList.toggle('active', isFav);
-                favoriteButton.title = isFav ? 'Remove from favorites' : 'Add to favorites';
-            }
-        });
+        // **REMOVED THE CODE THAT UPDATES MAIN SERVER LIST BUTTONS**
+        // // Update the favorite button in the MAIN server list
+        // // const allServerCards = document.querySelectorAll('.server-card');
+        // // allServerCards.forEach(card => {
+        // //     const serverId = card.dataset.serverId;
+        // //     const favoriteButton = card.querySelector('.favorite-btn');
+        // //     if (favoriteButton && serverId) {
+        // //         const isFav = favoriteServers.some(fav => fav._id === serverId);
+        // //         console.log(`[FAV-UPDATE] Server ID: ${serverId}, Is Favorite: ${isFav}`);
+        // //         favoriteButton.classList.toggle('active', isFav);
+        // //         favoriteButton.title = isFav ? 'Remove from favorites' : 'Add to favorites';
+        // //     }
+        // // });
     }
 
     // Search servers function
