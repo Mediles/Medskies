@@ -59,8 +59,13 @@
             <span class="mdi mdi-alert"></span>
             <span>Intelligence Network Disrupted. Retrying...</span>
         </div>
+
+        <div class="view-tabs">
+            <button id="tab-all" class="tab-button active"><span class="mdi mdi-server-network"></span> All Servers</button>
+            <button id="tab-favorites" class="tab-button"><span class="mdi mdi-star"></span> Favorites</button>
+        </div>
         
-        <section id="favorites-section" class="favorites-matrix" style="display: none;">
+        <section id="favorites-section" class="favorites-matrix server-view" style="display: none;">
             <div class="section-header">
                 <h2><span class="mdi mdi-star"></span>Priority Servers</h2>
                 <span class="section-meta" id="favorites-count">0 tracked</span>
@@ -68,7 +73,7 @@
             <div id="favorites-container" class="server-grid"></div>
         </section>
         
-        <section class="servers-matrix">
+        <section id="all-servers-section" class="servers-matrix server-view">
             <div class="section-header">
                 <h2><span class="mdi mdi-server-network"></span>Server Intelligence</h2>
                 <div class="view-controls">
