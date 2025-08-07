@@ -2,12 +2,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const serversContainer = document.getElementById('servers-container');
     const favoritesContainer = document.getElementById('favorites-container');
     const favoritesSection = document.getElementById('favorites-section');
+    const allServersSection = document.getElementById('all-servers-section');
     const loadingElement = document.getElementById('loading');
     const errorElement = document.getElementById('error');
     const searchInput = document.getElementById('search-input');
     const searchButton = document.getElementById('search-button');
     const modal = document.getElementById('server-modal');
     const closeBtn = document.querySelector('.close-modal');
+    const tabAll = document.getElementById('tab-all');
+    const tabFavorites = document.getElementById('tab-favorites');
 
 
 
@@ -19,6 +22,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     closeBtn.addEventListener('click', () => {
         modal.style.display = 'none';
+    });
+    
+    // Tab switching functionality
+    tabAll.addEventListener('click', () => {
+        tabAll.classList.add('active');
+        tabFavorites.classList.remove('active');
+        allServersSection.style.display = 'block';
+        favoritesSection.style.display = 'none';
+    });
+    
+    tabFavorites.addEventListener('click', () => {
+        tabFavorites.classList.add('active');
+        tabAll.classList.remove('active');
+        favoritesSection.style.display = 'block';
+        allServersSection.style.display = 'none';
+        displayFavorites(); // Refresh favorites display
     });
 
     // Function to parse MOTD formatting with color tags
@@ -164,6 +183,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 favoriteButton.title = !wasFavorite ? 'Remove from favorites' : 'Add to favorites';
             }
         }
+        
+        // If we're in the favorites tab and removed a favorite, check if we need to show empty state
+        if (wasFavorite && tabFavorites.classList.contains('active')) {
+            if (favoriteServers.length === 0) {
+                favoritesContainer.innerHTML = '<div class="empty-state"><span class="mdi mdi-star-outline"></span><p>No favorite servers yet. Click the star icon on any server to add it to your favorites.</p></div>';
+            }
+        }
     }
 
     // Category color mapping and display order
@@ -290,18 +316,18 @@ document.addEventListener('DOMContentLoaded', () => {
         favoritesContainer.innerHTML = '';
         console.log("[DISPLAY-FAV] Rendering Favorites:", favoriteServers);
         if (favoriteServers.length === 0) {
-            favoritesSection.style.display = 'none';
-            return;
+            // Show empty state message instead of hiding the section
+            favoritesContainer.innerHTML = '<div class="empty-state"><span class="mdi mdi-star-outline"></span><p>No favorite servers yet. Click the star icon on any server to add it to your favorites.</p></div>';
+        } else {
+            favoriteServers.forEach(favorite => {
+                const serverCard = createServerCard(favorite, null, true);
+                if (serverCard) {
+                    favoritesContainer.appendChild(serverCard);
+                } else {
+                    console.error('createServerCard returned null for favorite:', favorite?.name);
+                }
+            });
         }
-        favoritesSection.style.display = 'block';
-        favoriteServers.forEach(favorite => {
-            const serverCard = createServerCard(favorite, null, true);
-            if (serverCard) {
-                favoritesContainer.appendChild(serverCard);
-            } else {
-                console.error('createServerCard returned null for favorite:', favorite?.name);
-            }
-        });
         document.getElementById('favorites-count').textContent = `${favoriteServers.length} tracked`;
 
         // **REMOVED THE CODE THAT UPDATES MAIN SERVER LIST BUTTONS**
@@ -342,12 +368,23 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadServers() {
         const errorElement = document.getElementById('error');
         const serversContainer = document.getElementById('servers-container');
-        const initialLoadCount = 20;
     
         try {
             loadingElement.style.display = 'block';
             errorElement.style.display = 'none';
             serversContainer.innerHTML = '';
+            
+            // Initialize favorites display
+            displayFavorites();
+            
+            // Make sure the correct tab is active on initial load
+            if (tabFavorites.classList.contains('active')) {
+                allServersSection.style.display = 'none';
+                favoritesSection.style.display = 'block';
+            } else {
+                allServersSection.style.display = 'block';
+                favoritesSection.style.display = 'none';
+            }
     
             // favoriteServers is now initialized at the top of the DOMContentLoaded block
             console.log("[INIT] favoriteServers (after load):", favoriteServers);
@@ -357,8 +394,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return {...server, categories: server.allCategories || [], online: false};
             });
     
-            // Fetch detailed information for the top N servers
-            const serversToDetail = initialServers.slice(0, initialLoadCount);
+            // Fetch detailed information for all servers
+            const serversToDetail = initialServers;
             const detailedServersPromises = serversToDetail.map(async (server) => {
                 try {
                     const response = await fetch(`https://api.minehut.com/server/${server.staticInfo._id}`);
