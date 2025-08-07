@@ -125,6 +125,38 @@ body {
 }
 
 /* Metrics Dashboard */
+
+.view-tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--color-surface-accent);
+}
+
+.tab-button {
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    font-weight: 500;
+    border-bottom: 2px solid transparent;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tab-button:hover {
+    color: var(--color-text);
+}
+
+.tab-button.active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+}
+
 .metrics-dashboard {
     display: flex;
     gap: 2rem;
@@ -481,23 +513,72 @@ body {
     background: var(--color-surface);
     box-shadow: var(--shadow-sm);
     border-radius: 6px;
-    border: 2px solid red !important; /* Temporary */
 }
 
-#favorites-section h2 {
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.section-header h2 {
     font-size: 1.2rem;
     font-weight: 700;
-    margin-bottom: 0.75rem;
-}
-
-#favorites-container {
     display: flex;
-    flex-direction: column;
+    align-items: center;
     gap: 0.5rem;
 }
 
-#favorites-count {
+.section-meta {
     color: var(--color-text-muted);
     font-size: 0.8rem;
-    margin-top: 0.5rem;
+}
+
+#favorites-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+}
+
+/* Empty state styling */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    color: var(--color-text-muted);
+    grid-column: 1 / -1;
+}
+
+.empty-state .mdi {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--color-primary);
+}
+
+.empty-state p {
+    max-width: 300px;
+    line-height: 1.5;
+}
+
+/* Responsive design for favorites container */
+@media (max-width: 1200px) {
+    #favorites-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    #favorites-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    #favorites-container {
+        grid-template-columns: 1fr;
+    }
 }
